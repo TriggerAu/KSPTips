@@ -7,7 +7,7 @@ Author: TriggerAu
 ####About
 This plugin adds some popup tips to the KSC scene that can give newer players some ideas of how to progress. The basic install of it contains 40 basic tips - a mix of Career and Sandbox tips.
 
-The plugin will once a day download the Tips.cfg file from this Guthub repository to update whats there as tips are added.
+The plugin will once a day download the Tips.cfg file from this Guthub repository to update whats there as tips are added. They roll every 15 secs and you can skip forward and back and pause then - as well as dismiss the tips obviously
 
 Players can submit tips for inclusion via the [KSP Tips Submission Form](https://docs.google.com/forms/d/124jXER4WyRnAx6W23FRr4m8D3TkFQGUCSefkH0q44Xg/viewform)
 
