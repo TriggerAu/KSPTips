@@ -11,5 +11,11 @@ The plugin will once a day download the Tips.cfg file from this Guthub repositor
 
 Players can submit tips for inclusion via the [KSP Tips Submission Form](https://docs.google.com/forms/d/124jXER4WyRnAx6W23FRr4m8D3TkFQGUCSefkH0q44Xg/viewform)
 
+####Installation
+Simply unpack the KSPTips folder into the Gamedata folder of your KSP Install and you are done. Path will look like the below
+```
+<KSPDIR>/GameData/KSPTips/KSPTips.dll
+```
+
 ####Downloads
 You can find a full list of all the released versions and their associated KSP version in the [GitHub Releases for the project](https://github.com/TriggerAu/KSPTips/releases)
