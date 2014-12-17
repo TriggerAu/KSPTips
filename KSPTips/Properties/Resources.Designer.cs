@@ -91,32 +91,32 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap img_Cross {
+        internal static byte[] img_Cross {
             get {
                 object obj = ResourceManager.GetObject("img_Cross", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap img_Next {
+        internal static byte[] img_Next {
             get {
                 object obj = ResourceManager.GetObject("img_Next", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap img_Pause {
+        internal static byte[] img_Pause {
             get {
                 object obj = ResourceManager.GetObject("img_Pause", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
@@ -131,12 +131,12 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap img_Prev {
+        internal static byte[] img_Prev {
             get {
                 object obj = ResourceManager.GetObject("img_Prev", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
@@ -176,6 +176,16 @@ namespace KSPTips.Properties {
         internal static byte[] Mortimer {
             get {
                 object obj = ResourceManager.GetObject("Mortimer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Plugin {
+            get {
+                object obj = ResourceManager.GetObject("Plugin", resourceCulture);
                 return ((byte[])(obj));
             }
         }

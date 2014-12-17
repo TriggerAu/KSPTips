@@ -28,7 +28,7 @@ namespace KSPTips
 
         internal Texture2D texBox,texCross,texPlay,texNext,texPrev,texPause;
 
-        public List<Tip> lstTips;
+        public static List<Tip> lstTips;
 
         internal override void Awake()
         {
@@ -68,7 +68,7 @@ namespace KSPTips
             }
 
             //Now do a background download of the tips as well
-
+            KSPTipsDownloader.BeginCheck();
 
 #if DEBUG
             debugwin = gameObject.AddComponent<TransferWindowPlanner.TipsWindowDebug>();
@@ -157,7 +157,7 @@ namespace KSPTips
 
             tipwindow.thistip = lstTips[DisplayedTip];
 
-            LogFormatted("NewTip:{0}-{1}-{2}-{3}", DisplayedTip, tipwindow.thistip.Question, tipwindow.thistip.Answer, tipwindow.thistip.Image);
+            LogFormatted_DebugOnly("NewTip:{0}-{1}-{2}-{3}", DisplayedTip, tipwindow.thistip.Question, tipwindow.thistip.Answer, tipwindow.thistip.Image);
             tipwindow.texImage = new Texture2D(64,64,TextureFormat.ARGB32,false);
             if (tipwindow.thistip.Image != "") {
                 tipwindow.thistip.ImageLoaded = ExtractToTexture(ref tipwindow.texImage, tipwindow.thistip.Image);
@@ -215,7 +215,7 @@ namespace KSPTips
             return result;
         }
 
-        public void loadTips()
+        public static void loadTips()
         {
             //Extract the Tips file resource if theres no file
             if (!System.IO.File.Exists(PathPlugin + "/Tips.cfg"))
@@ -226,8 +226,8 @@ namespace KSPTips
             LogFormatted(PathPlugin + "/Tips.cfg");
             ConfigNode cnToLoad = ConfigNode.Load(PathPlugin + "/Tips.cfg");
 
-            LogFormatted("{0}",cnToLoad.nodes.Count);
-            foreach (ConfigNode item in cnToLoad.nodes)
+            LogFormatted_DebugOnly("TipsInFile{0}",cnToLoad.GetNodes("TIP").Length);
+            foreach (ConfigNode item in cnToLoad.GetNodes("TIP"))
             {
                 Tip tmp = new Tip();
                 tmp.Question = item.GetValue("Question");
@@ -245,13 +245,13 @@ namespace KSPTips
                 lstTips = lstTips.Where(t => t.GameMode == null || t.GameMode.ToLower() != "career").ToList();
             }
 
-            //lstTips = lstTips.Where(tip => tip.ModAssembly == "" ||
-            //        (AssemblyLoader.loadedAssemblies
-            //            .Select(a => a.assembly.GetExportedTypes())
-            //            .SelectMany(t => t)
-            //            .Any(t => t.FullName.ToLower().EndsWith("." + tip.ModAssembly.ToLower()))
-            //        )
-            //    ).ToList();
+            lstTips = lstTips.Where(tip => tip.ModAssembly == "" ||
+                    (AssemblyLoader.loadedAssemblies
+                        .Select(a => a.assembly.GetExportedTypes())
+                        .SelectMany(t => t)
+                        .Any(t => t.FullName.ToLower().EndsWith("." + tip.ModAssembly.ToLower()))
+                    )
+                ).ToList();
 
             System.Random rand = new System.Random();
             lstTips = lstTips.OrderBy(t => rand.Next()).ToList();

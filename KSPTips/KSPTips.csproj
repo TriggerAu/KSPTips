@@ -46,6 +46,7 @@
     <Compile Include="KSPPluginFramework\ConfigNodeStorage.cs" />
     <Compile Include="KSPPluginFramework\ExtensionsUnity.cs" />
     <Compile Include="KSPTips.cs" />
+    <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
     <Compile Include="KSPTipsWindow.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
@@ -111,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\img_Prev.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Plugin.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

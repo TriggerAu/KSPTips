@@ -61,8 +61,6 @@ namespace KSPTips
             WindowRect.x = 0;
             WindowRect.y = Screen.height - (WindowRect.height + 36);
 
-            tipQlabel.fontSize = mbTip.debugwin.intTest1;
-
             if (Visible && drawingStarted)
             {
                 if (thistip.Image != "" && thistip.ImageLoaded)
