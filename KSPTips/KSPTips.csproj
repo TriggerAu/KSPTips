@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C8DC44B-862A-4A78-9AD3-345214C5EFCA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KSPTips</RootNamespace>
+    <AssemblyName>KSPTips</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\~Games\KSP_win_PluginTest_Minimal\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\~Games\KSP_win_PluginTest_Minimal\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="KSCMouseOver.cs" />
+    <Compile Include="KSPPluginFramework\ConfigNodeStorage.cs" />
+    <Compile Include="KSPPluginFramework\ExtensionsUnity.cs" />
+    <Compile Include="KSPTips.cs" />
+    <Compile Include="KSPTipsWindowBuilding.cs" />
+    <Compile Include="KSPTipsWindow.cs" />
+    <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
+    <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="KSPPluginFramework\SkinsLibrary.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="TipsWindowDebug.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gene.png" />
+    <None Include="Resources\Tips.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GroundCrew.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Jebediah.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Kerbal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Linus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Mortimer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Walt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Wernher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tex_Box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img_Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img_Cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img_Next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img_Pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img_Prev.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rem Set the Variables we need
+echo Finding KSP
+if exist "D:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
+	set GAMEPATH="D:\~Games\KSP_Win_PlugInTest_Minimal"
+) else if exist "C:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
+	set GAMEPATH="C:\~Games\KSP_Win_PlugInTest_Minimal
+) else if exist "D:\~Games\KSP_Win_PlugInTest\KSP.exe" (
+	set GAMEPATH="D:\~Games\KSP_Win_PlugInTest"
+) else if exist "C:\~Games\KSP_Win_PlugInTest\KSP.exe" (
+	set GAMEPATH="C:\~Games\KSP_Win_PlugInTest"
+)else (
+	echo "Cant find KSP"
+	exit 1
+)
+
+echo Gamepath: %25GAMEPATH%25
+echo ConfigName: $(ConfigurationName)
+set DestPath="%25GAMEPATH%25\GameData\$(ProjectName)"
+set Binary="%25GAMEPATH%25\KSP.exe"
+
+if not $(ConfigurationName)==Debug goto DEBUGREBUILDCONFIG
+:DEBUGCONFIG
+rem Copy DLL and run KSP
+copy "$(TargetPath)" "%25DestPath%25"
+rem and then run the game
+if exist "$(ProjectDir)..\..\StartX.exe" goto STARTX
+echo Running Directly
+"%25Binary%25"
+goto END
+
+:STARTX
+echo STARTX running
+"$(ProjectDir)..\..\StartX.exe" "%25Binary%25"
+goto END
+"%25Binary%25"
+
+goto END
+
+:DEBUGREBUILDCONFIG
+if not $(ConfigurationName)==DebugAndRebuild goto END
+rem This one will empty the dest folder and copy all the source files
+
+rem Delete the folder and recreate it
+rmdir /s /q "%25DestPath%25"
+mkdir "%25DestPath%25"
+
+rem Nowcopy all the files from the pluginfiles source
+xcopy "%25SourcePath%25\*.*" "%25DestPath%25" /SE
+rem and copy the new dll
+copy "$(TargetPath)" "%25DestPath%25"
+
+rem and then run the game
+"%25Binary%25"
+
+goto END
+
+:END</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
