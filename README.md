@@ -1,7 +1,7 @@
 KSPTips
 =======
 #####Plugin that provides "Helpful" in game tips and tricks 
-Forum Thread: [KSP Tips](http://forum.kerbalspaceprogram.com/threads/103537-0-90-KSP-Tips-v1-0-0-0-(Dec-17))  
+Forum Thread: [KSP Tips](http://forum.kerbalspaceprogram.com/threads/103537-KSP-Tips)  
 Author: TriggerAu
 
 ####About
