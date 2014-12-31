@@ -48,7 +48,7 @@
     <Compile Include="KSPTips.cs" />
     <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
-    <Compile Include="KSPTipsWindow.cs" />
+    <Compile Include="Windows\Tips.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +59,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Shared\AppLauncherWrapper.cs" />
     <Compile Include="TipsWindowDebug.cs" />
+    <Compile Include="Windows\Guides.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -69,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Gene.png" />
+    <None Include="Resources\Guides.cfg" />
     <None Include="Resources\Tips.cfg" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +118,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Plugin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\img_Book.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

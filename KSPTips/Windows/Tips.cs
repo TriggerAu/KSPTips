@@ -7,10 +7,10 @@ using KSP;
 using UnityEngine;
 using KSPPluginFramework;
 
-namespace KSPTips
+namespace KSPTips.Windows
 {
     [WindowInitials(DragEnabled=false,Visible=true,TooltipsEnabled=true)]
-    class KSPTipsWindow:MonoBehaviourWindow
+    class Tips:MonoBehaviourWindow
     {
         internal KSPTips mbTip;
 

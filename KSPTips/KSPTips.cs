@@ -9,12 +9,17 @@ using KSPPluginFramework;
 
 namespace KSPTips
 {
+
+
+
     [KSPAddon(KSPAddon.Startup.SpaceCentre,false)]
     public class KSPTips:MonoBehaviourExtended
     {
         internal static String PathPlugin = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        
-        internal KSPTipsWindow tipwindow;
+        internal static String PathPluginGuideImages = string.Format("{0}/Guides",PathPlugin);
+
+        internal Windows.Tips windowTips;
+        internal Windows.Guides windowGuides;
         
         ///////////////////////////////////////////////////////////////////////////
         //Removed Building MouseOver Functionality
@@ -25,10 +30,12 @@ namespace KSPTips
 #endif
 
         internal static Settings settings;
-
         internal Texture2D texBox,texCross,texPlay,texNext,texPrev,texPause;
 
+        internal AppLauncherButtonWrapper AppButton;
+
         public static List<Tip> lstTips;
+        public static List<GuidePage> lstGuides;
 
         internal override void Awake()
         {
@@ -49,9 +56,31 @@ namespace KSPTips
             }
             LogFormatted_DebugOnly(tipslist);
 
-            tipwindow = gameObject.AddComponent<KSPTipsWindow>();
-            tipwindow.mbTip = this;
-            tipwindow.Visible = !settings.Hidden;
+            loadGuides();
+            LogFormatted("GuidePages loaded: {0}",lstGuides.Count);
+            string guideslist = "";
+            foreach (GuidePage item in lstGuides)
+            {
+                guideslist += "\r\n" + String.Format("{0}", item.Image); //String.Format("{0}-{1}-{2}-{3}-{4}", item.Question, item.Answer, item.Image,item.GameMode,item.ModAssembly);
+            }
+            LogFormatted_DebugOnly(guideslist);
+
+            windowTips = gameObject.AddComponent<Windows.Tips>();
+            windowTips.mbTip = this;
+            windowTips.Visible = !settings.Hidden;
+
+            windowGuides = gameObject.AddComponent<Windows.Guides>();
+            windowGuides.mbTip = this;
+            windowGuides.WindowRect = new Rect(100, 100, 600, 400);
+
+            Texture2D texMainButton = new Texture2D(38, 38,TextureFormat.ARGB32,false);
+            KSPTips.ExtractToTexture(ref texMainButton,"img_Book");
+            AppButton = new AppLauncherButtonWrapper(texMainButton);
+            GameEvents.onGUIApplicationLauncherReady.Add(AppButton.OnGUIAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherUnreadifying.Add(AppButton.OnGUIAppLauncherUnreadify);
+
+            AppButton.onTrue += AppButton_onTrue;
+            AppButton.onFalse += AppButton_onFalse;
 
             ///////////////////////////////////////////////////////////////////////////
             //Removed Building MouseOver Functionality
@@ -75,6 +104,16 @@ namespace KSPTips
             debugwin.WindowRect = new Rect(0, 0, 100, 500);
 #endif
         }
+
+        void AppButton_onFalse(object sender, EventArgs e)
+        {
+            windowGuides.Visible = false;
+        }
+
+        void AppButton_onTrue(object sender, EventArgs e)
+        {
+            windowGuides.Visible = true;
+        }
         internal override void Start()
         {
             ///////////////////////////////////////////////////////////////////////////
@@ -83,6 +122,7 @@ namespace KSPTips
             //ScreenSafeUI.fetch.GetComponentInChildren<ScreenSafeGUIText>().gameObject.AddComponent<KSCMouseOver>();
             //KSCMouseOver.onMouseEnter += KSCMouseOver_onMouseEnter;
             //KSCMouseOver.onMouseExit += KSCMouseOver_onMouseExit;
+
         }
 
         internal override void OnGUIOnceOnly()
@@ -94,9 +134,6 @@ namespace KSPTips
             texPlay = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texPause = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texCross = new Texture2D(16, 16, TextureFormat.ARGB32, false);
-
-            
-
 
             KSPTips.ExtractToTexture(ref texCross, "img_Cross");
             KSPTips.ExtractToTexture(ref texPlay, "img_Play");
@@ -119,7 +156,7 @@ namespace KSPTips
                 {
                     settings.Hidden = false;
                     settings.Save();
-                    tipwindow.Visible = true;
+                    windowTips.Visible = true;
                     SetRepeatRate(15);
                     StartRepeatingWorker();
                     ChangeTip();
@@ -138,6 +175,9 @@ namespace KSPTips
             LogFormatted("KSPTips Destroyed");
 
 
+            GameEvents.onGUIApplicationLauncherReady.Remove(AppButton.OnGUIAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(AppButton.OnGUIAppLauncherUnreadify);
+
             ///////////////////////////////////////////////////////////////////////////
             //Removed Building MouseOver Functionality
             ///////////////////////////////////////////////////////////////////////////
@@ -155,12 +195,12 @@ namespace KSPTips
             else if (DisplayedTip < 0)
                 DisplayedTip += lstTips.Count;
 
-            tipwindow.thistip = lstTips[DisplayedTip];
+            windowTips.thistip = lstTips[DisplayedTip];
 
-            LogFormatted_DebugOnly("NewTip:{0}-{1}-{2}-{3}", DisplayedTip, tipwindow.thistip.Question, tipwindow.thistip.Answer, tipwindow.thistip.Image);
-            tipwindow.texImage = new Texture2D(64,64,TextureFormat.ARGB32,false);
-            if (tipwindow.thistip.Image != "") {
-                tipwindow.thistip.ImageLoaded = ExtractToTexture(ref tipwindow.texImage, tipwindow.thistip.Image);
+            LogFormatted_DebugOnly("NewTip:{0}-{1}-{2}-{3}", DisplayedTip, windowTips.thistip.Question, windowTips.thistip.Answer, windowTips.thistip.Image);
+            windowTips.texImage = new Texture2D(64,64,TextureFormat.ARGB32,false);
+            if (windowTips.thistip.Image != "") {
+                windowTips.thistip.ImageLoaded = ExtractToTexture(ref windowTips.texImage, windowTips.thistip.Image);
             }
 
         }
@@ -215,6 +255,49 @@ namespace KSPTips
             return result;
         }
 
+        /// <summary>
+        /// Loads a texture from the file system directly
+        /// </summary>
+        /// <param name="tex">Unity Texture to Load</param>
+        /// <param name="FileName">Image file name</param>
+        /// <param name="FolderPath">Optional folder path of image</param>
+        /// <returns></returns>
+        public static Boolean LoadImageFromFile(ref Texture2D tex, String FileName, String FolderPath = "")
+        {
+            //DebugLogFormatted("{0},{1}",FileName, FolderPath);
+            Boolean blnReturn = false;
+            try
+            {
+                if (FolderPath == "") FolderPath = PathPlugin;
+
+                //File Exists check
+                if (System.IO.File.Exists(String.Format("{0}/{1}", FolderPath, FileName)))
+                {
+                    try
+                    {
+                        MonoBehaviourExtended.LogFormatted_DebugOnly("Loading: {0}", String.Format("{0}/{1}", FolderPath, FileName));
+                        tex.LoadImage(System.IO.File.ReadAllBytes(String.Format("{0}/{1}", FolderPath, FileName)));
+                        blnReturn = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MonoBehaviourExtended.LogFormatted("Failed to load the texture:{0} ({1})", String.Format("{0}/{1}", FolderPath, FileName), ex.Message);
+                    }
+                }
+                else
+                {
+                    MonoBehaviourExtended.LogFormatted("Cannot find texture to load:{0}", String.Format("{0}/{1}", FolderPath, FileName));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MonoBehaviourExtended.LogFormatted("Failed to load (are you missing a file):{0} ({1})", String.Format("{0}/{1}", FolderPath, FileName), ex.Message);
+            }
+            return blnReturn;
+        }
+
         public static void loadTips()
         {
             //Extract the Tips file resource if theres no file
@@ -226,7 +309,7 @@ namespace KSPTips
             LogFormatted(PathPlugin + "/Tips.cfg");
             ConfigNode cnToLoad = ConfigNode.Load(PathPlugin + "/Tips.cfg");
 
-            LogFormatted_DebugOnly("TipsInFile{0}",cnToLoad.GetNodes("TIP").Length);
+            LogFormatted_DebugOnly("TipsInFile={0}",cnToLoad.GetNodes("TIP").Length);
             foreach (ConfigNode item in cnToLoad.GetNodes("TIP"))
             {
                 Tip tmp = new Tip();
@@ -256,6 +339,27 @@ namespace KSPTips
             System.Random rand = new System.Random();
             lstTips = lstTips.OrderBy(t => rand.Next()).ToList();
         }
+
+        public static void loadGuides()
+        {
+            //Extract the Guides file resource if theres no file
+            if (!System.IO.File.Exists(PathPlugin + "/Guides.cfg"))
+                System.IO.File.WriteAllBytes(PathPlugin + "/Guides.cfg", Properties.Resources.Guides);
+
+            lstGuides = new List<GuidePage>();
+
+            LogFormatted(PathPlugin + "/Guides.cfg");
+            ConfigNode cnToLoad = ConfigNode.Load(PathPlugin + "/Guides.cfg");
+
+            LogFormatted_DebugOnly("Pages in file={0}", cnToLoad.GetNodes("PAGE").Length);
+            foreach (ConfigNode item in cnToLoad.GetNodes("PAGE"))
+            {
+                GuidePage tmp = new GuidePage();
+                tmp.Image = item.GetValue("Image");
+
+                lstGuides.Add(tmp);
+            }
+        }
     }
 
 
@@ -267,6 +371,11 @@ namespace KSPTips
         public String GameMode { get; set; }
         public String ModAssembly { get; set; }
         public Boolean ImageLoaded { get; set; }
+    }
+
+    public class GuidePage
+    {
+        public String Image { get; set; }
     }
 
 #if DEBUG

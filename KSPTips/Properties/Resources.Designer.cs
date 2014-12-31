@@ -83,9 +83,29 @@ namespace KSPTips.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Guides {
+            get {
+                object obj = ResourceManager.GetObject("Guides", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Gus {
             get {
                 object obj = ResourceManager.GetObject("Gus", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] img_Book {
+            get {
+                object obj = ResourceManager.GetObject("img_Book", resourceCulture);
                 return ((byte[])(obj));
             }
         }
