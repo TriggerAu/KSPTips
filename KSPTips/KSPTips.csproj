@@ -45,6 +45,7 @@
     <Compile Include="KSCMouseOver.cs" />
     <Compile Include="KSPPluginFramework\ConfigNodeStorage.cs" />
     <Compile Include="KSPPluginFramework\ExtensionsUnity.cs" />
+    <Compile Include="KSPPluginFramework\MonoBehaviourWindowPlus.cs" />
     <Compile Include="KSPTips.cs" />
     <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
@@ -121,6 +122,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\img_Book.png" />
+    <None Include="Resources\img_SeparatorVertical.png" />
+    <None Include="Resources\img_DropDown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
