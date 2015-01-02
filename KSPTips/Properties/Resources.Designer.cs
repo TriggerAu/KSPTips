@@ -83,9 +83,29 @@ namespace KSPTips.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Guides {
+            get {
+                object obj = ResourceManager.GetObject("Guides", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Gus {
             get {
                 object obj = ResourceManager.GetObject("Gus", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] img_Book {
+            get {
+                object obj = ResourceManager.GetObject("img_Book", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -97,6 +117,16 @@ namespace KSPTips.Properties {
             get {
                 object obj = ResourceManager.GetObject("img_Cross", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap img_DropDown {
+            get {
+                object obj = ResourceManager.GetObject("img_DropDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -137,6 +167,16 @@ namespace KSPTips.Properties {
             get {
                 object obj = ResourceManager.GetObject("img_Prev", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap img_SeparatorVertical {
+            get {
+                object obj = ResourceManager.GetObject("img_SeparatorVertical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

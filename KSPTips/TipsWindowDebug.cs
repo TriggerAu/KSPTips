@@ -7,14 +7,14 @@ using KSP;
 using UnityEngine;
 using KSPPluginFramework;
 
-namespace TransferWindowPlanner
+namespace KSPTips
 {
 
 #if DEBUG
     [WindowInitials(DragEnabled = true, Visible = true)]
     class TipsWindowDebug : MonoBehaviourWindow
     {
-        public Int32 intTest1 = 13;
+        public Int32 intTest1 = 800;
         public Int32 intTest2 = 0;
         public Int32 intTest3 = 0;
         public Int32 intTest4 = 0;
@@ -79,7 +79,14 @@ namespace TransferWindowPlanner
                 DrawTextBox(ref intTest9);
                 DrawTextBox(ref intTest10);
 
+                GUILayout.Label(HighLogic.CurrentGame.editorFacility.ToString());
+                GUILayout.Label(EditorLogic.VesselRotation.ToString());
+                GUILayout.Label(Vector3d.up.ToString());
+                GUILayout.Label((EditorLogic.VesselRotation * Vector3d.up).ToString());
 
+                GUILayout.Label(((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up).ToString());
+
+                GUILayout.Label(Windows.Guides.isEditorVAB.ToString());
             }
             catch (Exception)
             {

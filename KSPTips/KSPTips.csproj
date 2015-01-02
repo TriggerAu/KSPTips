@@ -30,7 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\~Games\KSP_win_PluginTest_Minimal\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -45,10 +46,11 @@
     <Compile Include="KSCMouseOver.cs" />
     <Compile Include="KSPPluginFramework\ConfigNodeStorage.cs" />
     <Compile Include="KSPPluginFramework\ExtensionsUnity.cs" />
+    <Compile Include="KSPPluginFramework\MonoBehaviourWindowPlus.cs" />
     <Compile Include="KSPTips.cs" />
     <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
-    <Compile Include="KSPTipsWindow.cs" />
+    <Compile Include="Windows\Tips.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,7 +61,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Shared\AppLauncherWrapper.cs" />
     <Compile Include="TipsWindowDebug.cs" />
+    <Compile Include="Windows\Guides.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -69,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Gene.png" />
+    <None Include="Resources\Guides.cfg" />
     <None Include="Resources\Tips.cfg" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +121,11 @@
   <ItemGroup>
     <None Include="Resources\Plugin.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\img_Book.png" />
+    <None Include="Resources\img_SeparatorVertical.png" />
+    <None Include="Resources\img_DropDown.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem Set the Variables we need
@@ -157,7 +167,7 @@ goto END
 goto END
 
 :DEBUGREBUILDCONFIG
-if not $(ConfigurationName)==DebugAndRebuild goto END
+if not $(ConfigurationName)==DebugAndRebuild goto RELEASE
 rem This one will empty the dest folder and copy all the source files
 
 rem Delete the folder and recreate it
@@ -171,6 +181,11 @@ copy "$(TargetPath)" "%25DestPath%25"
 
 rem and then run the game
 "%25Binary%25"
+
+:RELEASE
+if not $(ConfigurationName)==Release goto END
+echo copy release version to pluginFiles
+copy "$(TargetPath)" "$(ProjectDir)..\PluginFiles\$(ProjectName)"
 
 goto END
 
