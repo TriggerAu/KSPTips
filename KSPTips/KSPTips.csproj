@@ -30,7 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\~Games\KSP_win_PluginTest_Minimal\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -166,7 +167,7 @@ goto END
 goto END
 
 :DEBUGREBUILDCONFIG
-if not $(ConfigurationName)==DebugAndRebuild goto END
+if not $(ConfigurationName)==DebugAndRebuild goto RELEASE
 rem This one will empty the dest folder and copy all the source files
 
 rem Delete the folder and recreate it
@@ -180,6 +181,11 @@ copy "$(TargetPath)" "%25DestPath%25"
 
 rem and then run the game
 "%25Binary%25"
+
+:RELEASE
+if not $(ConfigurationName)==Release goto END
+echo copy release version to pluginFiles
+copy "$(TargetPath)" "$(ProjectDir)..\PluginFiles\$(ProjectName)"
 
 goto END
 

@@ -7,12 +7,13 @@ using KSPPluginFramework;
 using UnityEngine;
 using KSP;
 
+
 namespace KSPTips.Windows
 {
     [WindowInitials(Caption="",DragEnabled=true,TooltipsEnabled=true,Visible=false)]
-    class Guides: MonoBehaviourWindowPlus
+    public class Guides: MonoBehaviourWindowPlus
     {
-        internal Boolean isEditorVAB { get { return ((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up); } }
+        internal static Boolean isEditorVAB { get { return ((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up); } }
 
         internal KSPTips mbTip;
 
@@ -45,33 +46,43 @@ namespace KSPTips.Windows
 
         internal override void Awake()
         {
-            listIsFiltered=true;
-            if (HighLogic.LoadedScene== GameScenes.EDITOR){
-                listCanBeFiltered = true;
-                if(isEditorVAB)
-                    lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "VAB").ToList();
-                else
-                    lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "SPH").ToList();
-            }
-            else if (HighLogic.LoadedScene == GameScenes.FLIGHT){
-                listCanBeFiltered = true;
-                lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "Flight").ToList();
-            } else {
-                listCanBeFiltered = false;
-                listIsFiltered=false;
-            }
-
             ddlGuide = new DropDownList(KSPTips.lstGuides.Select(g=>g.Title).ToList(),this);
-            ResetddlGuideList();
             ddlManager.Add(ddlGuide);
 
             ddlGuide.OnSelectionChanged += ddlGuide_OnSelectionChanged;
 
-            CurrentPage = 0;
-
-            UpdateGuidePage();
-
             base.Awake();
+        }
+
+        internal override void Start()
+        {
+            listIsFiltered = true;
+            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            {
+                listCanBeFiltered = true;
+                if (isEditorVAB) {
+                    lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "VAB").ToList();
+                } else {
+                    lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "SPH").ToList();
+                }
+            }
+            else if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                listCanBeFiltered = true;
+                lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "Flight").ToList();
+            }
+            else
+            {
+                listCanBeFiltered = false;
+                listIsFiltered = false;
+            }
+            CurrentPage = 0;
+            UpdateGuidePage();
+            ResetddlGuideList();
+
+            RemoveInputLock();
+
+            base.Start();
         }
 
         void ResetddlGuideList()
@@ -80,10 +91,10 @@ namespace KSPTips.Windows
             {
                 if (HighLogic.LoadedScene == GameScenes.EDITOR)
                 {
-                    if (HighLogic.CurrentGame.editorFacility == EditorFacility.SPH)
-                        ddlGuide.Items = KSPTips.lstGuides.Where(p => p.TargetScene == "SPH").Select(g => g.Title).ToList();
-                    else
+                    if (isEditorVAB)
                         ddlGuide.Items = KSPTips.lstGuides.Where(p => p.TargetScene == "VAB").Select(g => g.Title).ToList();
+                    else
+                        ddlGuide.Items = KSPTips.lstGuides.Where(p => p.TargetScene == "SPH").Select(g => g.Title).ToList();
                 }
                 else if (HighLogic.LoadedScene == GameScenes.FLIGHT)
                 {
@@ -93,12 +104,12 @@ namespace KSPTips.Windows
                 {
                     ddlGuide.Items = KSPTips.lstGuides.Select(g => g.Title).ToList();
                 }
+                ddlGuide.SelectedIndex = 0;
             }
             else
             {
                 ddlGuide.Items = KSPTips.lstGuides.Select(g => g.Title).ToList();
             }
-
 
         }
 
@@ -148,6 +159,15 @@ namespace KSPTips.Windows
                 if (listwasFiltered != listIsFiltered)
                 {
                     ResetddlGuideList();
+                    if (listIsFiltered)
+                    {
+                        CurrentPage = 0;
+                        UpdateGuidePage();
+                    }
+                    else
+                    {
+                        CurrentPage = lstPages.IndexOf(lstPagesFiltered[CurrentPage]);
+                    }
                 }
                 GUILayout.EndVertical();
             }
@@ -187,6 +207,7 @@ namespace KSPTips.Windows
         internal override void OnGUIEvery()
         {
             SetPageSize();
+            InputLockMonitor();
 
             base.OnGUIEvery();
         }
@@ -198,7 +219,7 @@ namespace KSPTips.Windows
 
             Single CalculatedWidth = (Single)Math.Truncate(MaxHeight * 3.0f / 2.0f);
 
-            LogFormatted("{0}-{1}-{2}", MaxHeight, MaxWidth, CalculatedWidth);
+            //LogFormatted("{0}-{1}-{2}", MaxHeight, MaxWidth, CalculatedWidth);
 
             if (CalculatedWidth > MaxWidth)
                 stylePage.fixedWidth = MaxWidth;
@@ -299,6 +320,10 @@ namespace KSPTips.Windows
             SkinsLibrary.AddStyle("Default", "DropDownListBox", styleDropDownListBox);
             SkinsLibrary.AddStyle("Default", "DropDownListItem", styleDropDownListItem);
 
+
+            SetPageSize();
+            WindowRect.x = (Screen.width - WindowRect.width) / 2;
+            WindowRect.y = (Screen.height - WindowRect.height) / 2;
         }
 
         internal Boolean isPageImageLoaded = false;
@@ -312,5 +337,64 @@ namespace KSPTips.Windows
                 ddlGuide.SelectedIndex = ddlIndex;
             }
         }
+
+
+
+
+        internal Boolean MouseOverWindow = false;
+        internal Boolean InputLockExists = false;
+        void InputLockMonitor()
+        {
+            MouseOverWindow = Visible && WindowRect.Contains(Event.current.mousePosition);
+
+            //If the setting is on and the mouse is over any window then lock it
+            if (MouseOverWindow && !InputLockExists)
+            {
+                Boolean AddLock = false;
+                switch (HighLogic.LoadedScene)
+                {
+                    case GameScenes.SPACECENTER: AddLock = !(  InputLockManager.GetControlLock("KSPTipsControlLock") != ControlTypes.None); break;
+                    case GameScenes.EDITOR: AddLock = !(InputLockManager.GetControlLock("KSPTipsControlLock") != ControlTypes.None); break;
+                    case GameScenes.FLIGHT: AddLock = !(InputLockManager.GetControlLock("KSPTipsControlLock") != ControlTypes.None); break;
+                    case GameScenes.TRACKSTATION:
+                        break;
+                    default:
+                        break;
+                }
+                if (AddLock)
+                {
+                    LogFormatted_DebugOnly("AddingLock-{0}", "KSPTipsControlLock");
+
+                    switch (HighLogic.LoadedScene)
+                    {
+                        case GameScenes.SPACECENTER: InputLockManager.SetControlLock(ControlTypes.KSC_FACILITIES, "KSPTipsControlLock"); break;
+                        case GameScenes.EDITOR: InputLockManager.SetControlLock(ControlTypes.EDITOR_LOCK, "KSPTipsControlLock"); break;
+                        case GameScenes.FLIGHT: InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "KSPTipsControlLock"); break;
+                        case GameScenes.TRACKSTATION:
+                            break;
+                        default:
+                            break;
+                    }
+                    InputLockExists = true;
+                }
+            }
+            //Otherwise make sure the lock is removed
+            else if (!MouseOverWindow && InputLockExists)
+            {
+                RemoveInputLock();
+            }
+        }
+
+        internal void RemoveInputLock()
+        {
+            if (InputLockManager.GetControlLock("KSPTipsControlLock") != ControlTypes.None)
+            {
+                LogFormatted_DebugOnly("Removing-{0}", "KSPTipsControlLock");
+                InputLockManager.RemoveControlLock("KSPTipsControlLock");
+            }
+            InputLockExists = false;
+        }
+
+        
     }
 }

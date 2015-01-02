@@ -63,7 +63,7 @@ namespace KSPTips
         ///////////////////////////////////////////////////////////////////////////
         //internal KSPTipsWindowBuilding tipwindowBuilding;
 #if DEBUG
-        internal TransferWindowPlanner.TipsWindowDebug debugwin;
+        internal TipsWindowDebug debugwin;
 #endif
 
         internal static Settings settings;
@@ -144,7 +144,7 @@ namespace KSPTips
             KSPTipsDownloader.BeginCheck();
 
 #if DEBUG
-            debugwin = gameObject.AddComponent<TransferWindowPlanner.TipsWindowDebug>();
+            debugwin = gameObject.AddComponent<TipsWindowDebug>();
             debugwin.WindowRect = new Rect(0, 0, 100, 500);
 #endif
         }
@@ -424,6 +424,7 @@ namespace KSPTips
                 }
             }
         }
+
     }
 
 

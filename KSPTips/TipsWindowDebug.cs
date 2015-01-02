@@ -7,7 +7,7 @@ using KSP;
 using UnityEngine;
 using KSPPluginFramework;
 
-namespace TransferWindowPlanner
+namespace KSPTips
 {
 
 #if DEBUG
@@ -85,6 +85,8 @@ namespace TransferWindowPlanner
                 GUILayout.Label((EditorLogic.VesselRotation * Vector3d.up).ToString());
 
                 GUILayout.Label(((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up).ToString());
+
+                GUILayout.Label(Windows.Guides.isEditorVAB.ToString());
             }
             catch (Exception)
             {
