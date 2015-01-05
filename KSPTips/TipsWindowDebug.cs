@@ -14,7 +14,7 @@ namespace KSPTips
     [WindowInitials(DragEnabled = true, Visible = true)]
     class TipsWindowDebug : MonoBehaviourWindow
     {
-        public Int32 intTest1 = 800;
+        public Int32 intTest1 = 65;
         public Int32 intTest2 = 0;
         public Int32 intTest3 = 0;
         public Int32 intTest4 = 0;

@@ -67,7 +67,7 @@ namespace KSPTips
 #endif
 
         internal static Settings settings;
-        internal Texture2D texBox,texCross,texPlay,texNext,texPrev,texPause;
+        internal Texture2D texBox,texBoxWithHeader,texCross,texPlay,texNext,texPrev,texPause;
 
         internal AppLauncherButtonWrapper AppButton;
 
@@ -173,7 +173,8 @@ namespace KSPTips
         {
             //SkinsLibrary.SetCurrent(SkinsLibrary.DefSkinType.Unity);
 
-            texBox = new Texture2D(9, 9,TextureFormat.ARGB32,false);
+            texBox = new Texture2D(9, 9, TextureFormat.ARGB32, false);
+            texBoxWithHeader = new Texture2D(9, 20, TextureFormat.ARGB32, false);
             texNext = new Texture2D(10, 10, TextureFormat.ARGB32, false);
             texPrev = new Texture2D(10, 10, TextureFormat.ARGB32, false);
             texPlay = new Texture2D(16, 16, TextureFormat.ARGB32, false);
@@ -186,6 +187,7 @@ namespace KSPTips
             KSPTips.ExtractToTexture(ref texNext, "img_Next");
             KSPTips.ExtractToTexture(ref texPrev, "img_Prev");
             KSPTips.ExtractToTexture(ref texBox, "tex_Box");
+            KSPTips.ExtractToTexture(ref texBoxWithHeader, "tex_BoxWithHeader");
         }
 
         internal override void OnGUIEvery()
@@ -203,6 +205,9 @@ namespace KSPTips
                         settings.Hidden = false;
                         settings.Save();
                         windowTips.Visible = true;
+                        windowTips.WindowRect.x = 0;
+                        windowTips.WindowRect.y = Screen.height - (67 + 36);
+
                         SetRepeatRate(15);
                         StartRepeatingWorker();
                         ChangeTip();
