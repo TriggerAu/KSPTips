@@ -9,7 +9,7 @@ using KSPPluginFramework;
 
 namespace KSPTips.Windows
 {
-    [WindowInitials(DragEnabled=true,Visible=true,TooltipsEnabled=true)]
+    [WindowInitials(DragEnabled=true,Visible=true,TooltipsEnabled=true,WindowMoveEventsEnabled=true)]
     class Tips:MonoBehaviourWindow
     {
         internal KSPTips mbTip;
@@ -21,6 +21,25 @@ namespace KSPTips.Windows
 
         GUIStyle styleButton;
 
+        internal override void Awake()
+        {
+            onWindowMoveComplete += Tips_onWindowMoveComplete;
+
+            base.Awake();
+        }
+
+        internal override void OnDestroy()
+        {
+            onWindowMoveComplete -= Tips_onWindowMoveComplete;
+            
+            base.OnDestroy();
+        }
+        void Tips_onWindowMoveComplete(MonoBehaviourWindow sender)
+        {
+            KSPTips.settings.TipsTopLeftPos.x = WindowRect.x;
+            KSPTips.settings.TipsTopLeftPos.y = WindowRect.y;
+            KSPTips.settings.Save();
+        }
 
         internal override void OnGUIOnceOnly()
         {
@@ -53,8 +72,19 @@ namespace KSPTips.Windows
             tipAlabel.fontStyle = FontStyle.Normal;
             tipAlabel.wordWrap = true;
 
-            WindowRect.x = 0;
-            WindowRect.y = Screen.height - (67 + 36);
+            if (KSPTips.settings.TipsTopLeftSet) {
+                WindowRect.x = KSPTips.settings.TipsTopLeftPos.x;
+                WindowRect.y = KSPTips.settings.TipsTopLeftPos.y;
+            } else {
+                ResetWindowPos();
+            }
+        }
+
+        private void ResetWindowPos()
+        {
+            WindowRect.x = KSPTips.settings.TipsTopLeftPos.x = 0;
+            WindowRect.y = KSPTips.settings.TipsTopLeftPos.y = Screen.height - (67 + 36);
+            KSPTips.settings.Save();
         }
 
 
@@ -176,6 +206,13 @@ namespace KSPTips.Windows
                     mbTip.StartRepeatingWorker();
                 }
                 else { mbTip.ChangeTip(+1); }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(new GUIContent(mbTip.texReset, "Reset Window Position"), styleButton))
+            {
+                ResetWindowPos();
             }
             GUILayout.EndHorizontal();
 

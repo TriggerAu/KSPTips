@@ -19,5 +19,12 @@ namespace KSPTips
 
         [Persistent]
         public String DateTipsDownloaded = "";
+
+        [Persistent]
+        public Vector2 TipsTopLeftPos = new Vector2();
+        [Persistent]
+        public Boolean TipsTopLeftSet = false;
     }
+
+
 }
