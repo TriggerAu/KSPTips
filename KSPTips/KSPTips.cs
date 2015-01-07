@@ -67,7 +67,7 @@ namespace KSPTips
 #endif
 
         internal static Settings settings;
-        internal Texture2D texBox,texBoxWithHeader,texCross,texPlay,texNext,texPrev,texPause;
+        internal Texture2D texBox,texBoxWithHeader,texCross,texPlay,texNext,texPrev,texPause,texReset;
 
         internal AppLauncherButtonWrapper AppButton;
 
@@ -180,7 +180,9 @@ namespace KSPTips
             texPlay = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texPause = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texCross = new Texture2D(16, 16, TextureFormat.ARGB32, false);
+            texReset = new Texture2D(16, 16, TextureFormat.ARGB32, false);
 
+            KSPTips.ExtractToTexture(ref texReset, "img_Reset");
             KSPTips.ExtractToTexture(ref texCross, "img_Cross");
             KSPTips.ExtractToTexture(ref texPlay, "img_Play");
             KSPTips.ExtractToTexture(ref texPause, "img_Pause");

@@ -14,16 +14,12 @@ namespace KSPTips
         internal Settings(String FilePath)
             : base(FilePath) { }
         
-        [Persistent]
-        public Boolean Hidden = false;
+        [Persistent] public Boolean Hidden = false;
 
-        [Persistent]
-        public String DateTipsDownloaded = "";
+        [Persistent] public String DateTipsDownloaded = "";
 
-        [Persistent]
-        public Vector2 TipsTopLeftPos = new Vector2();
-        [Persistent]
-        public Boolean TipsTopLeftSet = false;
+        [Persistent] public Vector3 TipsTopLeftPos = new Vector3();
+        [Persistent] public Boolean TipsTopLeftSet = false;
     }
 
 

@@ -171,6 +171,16 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap img_Reset {
+            get {
+                object obj = ResourceManager.GetObject("img_Reset", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] img_SeparatorVertical {
@@ -241,12 +251,12 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap tex_BoxWithHeader {
+        internal static byte[] tex_BoxWithHeader {
             get {
                 object obj = ResourceManager.GetObject("tex_BoxWithHeader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         

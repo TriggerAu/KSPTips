@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\img_Book.png" />
+    <None Include="Resources\img_Reset.png" />
     <None Include="Resources\tex_BoxWithHeader.png" />
     <None Include="Resources\img_SeparatorVertical.png" />
     <None Include="Resources\img_DropDown.png" />

@@ -25,6 +25,17 @@ namespace KSPTips.Windows
         {
             onWindowMoveComplete += Tips_onWindowMoveComplete;
 
+            if (KSPTips.settings.TipsTopLeftSet)
+            {
+                WindowRect.x = KSPTips.settings.TipsTopLeftPos.x;
+                WindowRect.y = KSPTips.settings.TipsTopLeftPos.y;
+            }
+            else
+            {
+                KSPTips.settings.TipsTopLeftSet = true;
+                ResetWindowPos();
+            }
+
             base.Awake();
         }
 
@@ -72,12 +83,7 @@ namespace KSPTips.Windows
             tipAlabel.fontStyle = FontStyle.Normal;
             tipAlabel.wordWrap = true;
 
-            if (KSPTips.settings.TipsTopLeftSet) {
-                WindowRect.x = KSPTips.settings.TipsTopLeftPos.x;
-                WindowRect.y = KSPTips.settings.TipsTopLeftPos.y;
-            } else {
-                ResetWindowPos();
-            }
+            LogFormatted("Window:{0}", WindowRect);
         }
 
         private void ResetWindowPos()
@@ -91,7 +97,7 @@ namespace KSPTips.Windows
         internal override void OnGUIEvery()
         {
             WindowRect.height = 67; //56
-            WindowRect.width = 400;
+            WindowRect.width = 402;
             
 
             //if (Visible && drawingStarted)
@@ -163,7 +169,7 @@ namespace KSPTips.Windows
             }
 
             GUILayout.BeginVertical(new GUIStyle() { fixedWidth = 352 });
-            GUILayout.Space(18);
+            GUILayout.Space(17);
             GUILayout.Label(thistip.Question, tipQlabel,GUILayout.Width(390));
             GUILayout.Label(thistip.Answer,tipAlabel);
             GUILayout.EndVertical();
@@ -185,6 +191,8 @@ namespace KSPTips.Windows
                 Visible = false;
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.Space(-3);
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(new GUIContent(mbTip.texPrev, "Prev Tip"), styleButton))
@@ -209,12 +217,17 @@ namespace KSPTips.Windows
             }
             GUILayout.EndHorizontal();
 
+            GUILayout.Space(-3);
+
             GUILayout.BeginHorizontal();
+            GUILayout.Space(26);
             if (GUILayout.Button(new GUIContent(mbTip.texReset, "Reset Window Position"), styleButton))
             {
                 ResetWindowPos();
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
 
