@@ -68,6 +68,7 @@ namespace KSPTips
 
         internal static Settings settings;
         internal Texture2D texBox,texBoxWithHeader,texCross,texPlay,texNext,texPrev,texPause,texReset;
+        internal Texture2D texBookSmall,texKeyboardSmall;
 
         internal AppLauncherButtonWrapper AppButton;
 
@@ -182,6 +183,9 @@ namespace KSPTips
             texCross = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texReset = new Texture2D(16, 16, TextureFormat.ARGB32, false);
 
+            texBookSmall = new Texture2D(14, 14, TextureFormat.ARGB32, false);
+            texKeyboardSmall = new Texture2D(16, 14, TextureFormat.ARGB32, false);
+
             KSPTips.ExtractToTexture(ref texReset, "img_Reset");
             KSPTips.ExtractToTexture(ref texCross, "img_Cross");
             KSPTips.ExtractToTexture(ref texPlay, "img_Play");
@@ -190,6 +194,10 @@ namespace KSPTips
             KSPTips.ExtractToTexture(ref texPrev, "img_Prev");
             KSPTips.ExtractToTexture(ref texBox, "tex_Box");
             KSPTips.ExtractToTexture(ref texBoxWithHeader, "tex_BoxWithHeader");
+
+            KSPTips.ExtractToTexture(ref texBookSmall, "img_BookSmall");
+            KSPTips.ExtractToTexture(ref texKeyboardSmall, "img_KeyboardSmall");
+
         }
 
         internal override void OnGUIEvery()

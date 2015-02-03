@@ -13,12 +13,22 @@ namespace KSPTips.Windows
     [WindowInitials(Caption="",DragEnabled=true,TooltipsEnabled=true,Visible=false)]
     public class Guides: MonoBehaviourWindowPlus
     {
+        enum WindowDisplayEnum
+        {
+            GuidePages,
+            KeyboardMap
+        }
+        
         internal static Boolean isEditorVAB { get { return ((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up); } }
 
         internal KSPTips mbTip;
 
+        internal WindowDisplayEnum WindowToDisplay = WindowDisplayEnum.GuidePages;
+
         internal Int32 CurrentPage = 0;
         internal Texture2D texPage = new Texture2D(1500,1000,TextureFormat.ARGB32,false);
+
+        
 
         GUIStyle styleButton, stylePage, styleTitle, stylePageNums, styleToggle;
 

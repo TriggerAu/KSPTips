@@ -111,6 +111,16 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap img_BookSmall {
+            get {
+                object obj = ResourceManager.GetObject("img_BookSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] img_Cross {
@@ -127,6 +137,16 @@ namespace KSPTips.Properties {
             get {
                 object obj = ResourceManager.GetObject("img_DropDown", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap img_KeyboardSmall {
+            get {
+                object obj = ResourceManager.GetObject("img_KeyboardSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -171,12 +191,12 @@ namespace KSPTips.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap img_Reset {
+        internal static byte[] img_Reset {
             get {
                 object obj = ResourceManager.GetObject("img_Reset", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
