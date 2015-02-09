@@ -147,35 +147,80 @@ namespace KSPTips.Windows
         internal override void DrawWindow(int id)
         {
             GUILayout.BeginVertical();
+            
+            DrawWindow_Header();
+            
+            switch (WindowToDisplay) {
+                case WindowDisplayEnum.KeyboardMap:
+                    DrawWindow_KeyboardMap();
+                    break;
+                case WindowDisplayEnum.GuidePages:
+                default:
+                    DrawWindow_Guide();
+                    break;
+            }
 
-            if (!listCanBeFiltered)
+            GUILayout.EndVertical();
+        }
+
+        private void DrawWindow_Header()
+        {
+            if (WindowToDisplay != WindowDisplayEnum.GuidePages || !listCanBeFiltered)
                 GUILayout.Space(4);
 
-            GUILayout.BeginHorizontal(GUILayout.Height(listCanBeFiltered?32:24));
+            GUILayout.BeginHorizontal(GUILayout.Height(WindowToDisplay == WindowDisplayEnum.GuidePages && listCanBeFiltered ? 32 : 24));
 
             GUILayout.Space(4);
+            ///Buttone for toolbar type here
+            ///GUILayout.Toolbar((Int32)WindowToDisplay,new String[] {"A","B"});
+
+            switch (WindowToDisplay) {
+                case WindowDisplayEnum.KeyboardMap:
+                    DrawWindow_Header_KeyboardMap();
+                    break;
+                case WindowDisplayEnum.GuidePages:
+                default:
+                    DrawWindow_Header_GuidePages();
+            break;
+            }
+            
+
+            if (GUILayout.Button("X", styleButton)) {
+                mbTip.AppButton.btnAppLauncher.SetFalse(true);
+            }
+            GUILayout.Space(2);
+
+            GUILayout.EndHorizontal();
+
+        }
+
+        private void DrawWindow_Header_KeyboardMap()
+        {
+            //Flight or Build
+
+            //Zoom or not
+        }
+
+        private void DrawWindow_Header_GuidePages()
+        {
             // GUILayout.Label(String.Format("{0} - {1}", lstPages[CurrentPage].guide.Title, lstPages[CurrentPage].Title), styleTitle);
             //ddlGuide.styleButton.fixedWidth = mbTip.debugwin.intTest10;
-            GUILayout.Label("Section: ",styleTitle);
+            GUILayout.Label("Section: ", styleTitle);
             ddlGuide.DrawButton();
 
-            if (listCanBeFiltered)
-            {
+            if (listCanBeFiltered) {
                 GUILayout.Space(20);
                 GUILayout.BeginVertical();
                 GUILayout.Space(-2);
                 Boolean listwasFiltered = listIsFiltered;
                 listIsFiltered = GUILayout.Toggle(listIsFiltered, "Scene Specific Guides Only", styleToggle);
-                if (listwasFiltered != listIsFiltered)
-                {
+                if (listwasFiltered != listIsFiltered) {
                     ResetddlGuideList();
-                    if (listIsFiltered)
-                    {
+                    if (listIsFiltered) {
                         CurrentPage = 0;
                         UpdateGuidePage();
                     }
-                    else
-                    {
+                    else {
                         CurrentPage = lstPages.IndexOf(lstPagesFiltered[CurrentPage]);
                     }
                 }
@@ -184,34 +229,35 @@ namespace KSPTips.Windows
 
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(String.Format("Page {0}/{1}", CurrentPage + 1, lstPages.Count),stylePageNums);
-            if (GUILayout.Button("<< Prev",styleButton))
-            {
+            GUILayout.Label(String.Format("Page {0}/{1}", CurrentPage + 1, lstPages.Count), stylePageNums);
+            if (GUILayout.Button("<< Prev", styleButton)) {
                 CurrentPage--;
                 if (CurrentPage < 0)
                     CurrentPage = lstPages.Count - 1;
                 UpdateGuidePage();
             }
-            if (GUILayout.Button("Next >>", styleButton))
-            {
+            if (GUILayout.Button("Next >>", styleButton)) {
                 CurrentPage++;
                 if (CurrentPage >= lstPages.Count)
                     CurrentPage = 0;
                 UpdateGuidePage();
             }
-            if (GUILayout.Button("X", styleButton))
-            {
-                mbTip.AppButton.btnAppLauncher.SetFalse(true);
-            }
+        }
 
-            GUILayout.Space(2);
+        private void DrawWindow_KeyboardMap()
+        {
+            GUILayout.Space(-7);
 
-            GUILayout.EndHorizontal();
+            //draw the texture and drag with the mouse, or maybe scrollbar
+
+        }
+
+        private void DrawWindow_Guide()
+        {
             GUILayout.Space(-7);
 
             GUILayout.Box(texPage, stylePage);
 
-            GUILayout.EndVertical();
         }
 
         internal override void OnGUIEvery()
