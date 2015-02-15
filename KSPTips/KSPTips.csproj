@@ -50,8 +50,8 @@
     <Compile Include="KSPTips.cs" />
     <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
+    <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\TextureScale.cs" />
-    <Compile Include="Windows\Keymap.cs" />
     <Compile Include="Windows\Tips.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />

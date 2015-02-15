@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+
 using System.Linq;
 using System.Text;
 
@@ -13,9 +15,11 @@ namespace KSPTips.Windows
     [WindowInitials(Caption="",DragEnabled=true,TooltipsEnabled=true,Visible=false)]
     public class Guides: MonoBehaviourWindowPlus
     {
-        enum WindowDisplayEnum
+        internal enum WindowDisplayEnum
         {
+            [Description("Guide Pages")]
             GuidePages,
+            [Description("Keyboard Maps")]
             KeyboardMap
         }
         
@@ -24,13 +28,13 @@ namespace KSPTips.Windows
         internal KSPTips mbTip;
 
         internal WindowDisplayEnum WindowToDisplay = WindowDisplayEnum.GuidePages;
+        internal DropDownList ddlWindowDisplay;
 
         internal Int32 CurrentPage = 0;
         internal Texture2D texPage = new Texture2D(1500,1000,TextureFormat.ARGB32,false);
 
-        
 
-        GUIStyle styleButton, stylePage, styleTitle, stylePageNums, styleToggle;
+        GUIStyle styleButton, stylePage, styleTitle, stylePageNums, styleToggle, styleKeyMapTex;
 
         internal static GUIStyle styleDropDownGlyph;
         internal static GUIStyle styleSeparatorV;
@@ -58,6 +62,9 @@ namespace KSPTips.Windows
         {
             ddlGuide = new DropDownList(KSPTips.lstGuides.Select(g=>g.Title).ToList(),this);
             ddlManager.Add(ddlGuide);
+
+            ddlWindowDisplay = new DropDownList(EnumExtensions.ToEnumDescriptions<WindowDisplayEnum>() ,this);
+            ddlManager.Add(ddlWindowDisplay);
 
             ddlGuide.OnSelectionChanged += ddlGuide_OnSelectionChanged;
 
@@ -172,7 +179,13 @@ namespace KSPTips.Windows
 
             GUILayout.Space(4);
             ///Buttone for toolbar type here
-            ///GUILayout.Toolbar((Int32)WindowToDisplay,new String[] {"A","B"});
+            ///
+
+            GUILayout.Label("Info: ", styleTitle);
+            ddlWindowDisplay.DrawButton();
+            WindowToDisplay = (WindowDisplayEnum)ddlWindowDisplay.SelectedIndex;
+
+            GUILayout.Space(mbTip.debugwin.intTest1);
 
             switch (WindowToDisplay) {
                 case WindowDisplayEnum.KeyboardMap:
@@ -194,11 +207,44 @@ namespace KSPTips.Windows
 
         }
 
+        Int32 BuildOrFlight = 1;
+        Int32 LightOrDark = 0;
+        Boolean blnZoom = false;
+        String KeyboardMapTexture = "";
+        internal Texture2D texKeyboardMap = new Texture2D(2560, 1810, TextureFormat.ARGB32, false);
         private void DrawWindow_Header_KeyboardMap()
         {
             //Flight or Build
+            GUILayout.Label("Layout: ", styleTitle);
+            BuildOrFlight = GUILayout.Toolbar(BuildOrFlight, new String[] { "Build Map", "Flight Map" }, styleButton);
+
+            //LightOrDark
+            GUILayout.Space(mbTip.debugwin.intTest2);
+            GUILayout.Label("Background: ", styleTitle);
+            LightOrDark = GUILayout.Toolbar(LightOrDark, new String[] { "Light", "Dark" }, styleButton);
 
             //Zoom or not
+            GUILayout.Space(mbTip.debugwin.intTest3);
+            GUILayout.Label("Zoom: ", styleTitle);
+            blnZoom = GUILayout.Toggle(blnZoom, "Zoom In", styleButton);
+
+            String NewKeyboardMapTexture = "KeyboardLayout" +
+                (BuildOrFlight==0 ? "-Build" : "-Flight") + 
+                (LightOrDark==0 ? "" : "-Dark") +
+                "_Hires.png";
+
+            if (NewKeyboardMapTexture != KeyboardMapTexture)
+            {
+                KeyboardMapTexture = NewKeyboardMapTexture;
+
+                if (!KSPTips.LoadImageFromFile(ref texKeyboardMap, "KeyboardMaps/" + KeyboardMapTexture, KSPTips.PathPluginGuideImages))
+                {
+                    LogFormatted("Unable to load Keyboard Map: {0}", KeyboardMapTexture);
+                }
+
+            }
+
+            GUILayout.FlexibleSpace();
         }
 
         private void DrawWindow_Header_GuidePages()
@@ -244,12 +290,23 @@ namespace KSPTips.Windows
             }
         }
 
+        Vector2 KeyMapScrollPos = new Vector2();
         private void DrawWindow_KeyboardMap()
         {
             GUILayout.Space(-7);
 
             //draw the texture and drag with the mouse, or maybe scrollbar
+            if(!blnZoom){
+                GUILayout.Box(texKeyboardMap, stylePage);
+            }
+            else
+            {
+                KeyMapScrollPos = GUILayout.BeginScrollView(KeyMapScrollPos);
 
+                GUILayout.Box(texKeyboardMap, styleKeyMapTex);
+
+                GUILayout.EndScrollView();
+            }
         }
 
         private void DrawWindow_Guide()
@@ -332,7 +389,11 @@ namespace KSPTips.Windows
             stylePage.padding.right = -1;
             stylePage.padding.top = -1;
             stylePage.padding.bottom = 1;
- 
+
+            styleKeyMapTex = new GUIStyle(stylePage);
+            styleKeyMapTex.fixedWidth = 2560;
+            styleKeyMapTex.fixedHeight = 1810;
+
             styleDropDownGlyph = new GUIStyle();
             styleDropDownGlyph.alignment = TextAnchor.MiddleCenter;
 
@@ -355,12 +416,15 @@ namespace KSPTips.Windows
             styleDropDownButton.fixedWidth = 245;
 
             ddlGuide.styleButton = styleDropDownButton;
+            ddlWindowDisplay.styleButton = styleDropDownButton;
+            ddlWindowDisplay.styleButton.fixedWidth = 125;
 
             styleDropDownListBox = new GUIStyle();
             styleDropDownListBox.normal.background = mbTip.texBox;
             //Extra border to prevent bleed of color - actual border is only 1 pixel wide
             styleDropDownListBox.border = new RectOffset(3, 3, 3, 3);
             ddlGuide.styleListBox = styleDropDownListBox;
+            ddlWindowDisplay.styleListBox = styleDropDownListBox;
 
             styleDropDownListItem = new GUIStyle();
             styleDropDownListItem.normal.textColor = new Color(207, 207, 207);
@@ -371,6 +435,7 @@ namespace KSPTips.Windows
             styleDropDownListItem.onHover.textColor = Color.black;
             styleDropDownListItem.padding = new RectOffset(4, 4, 3, 4);
             ddlGuide.styleListItem = styleDropDownListItem;
+            ddlWindowDisplay.styleListItem = styleDropDownListItem;
 
             SkinsLibrary.AddStyle("Default", "DropDownButton", styleDropDownButton);
             SkinsLibrary.AddStyle("Default", "DropDownListBox", styleDropDownListBox);
