@@ -40,7 +40,7 @@ namespace KSPTips.Windows
         internal static GUIStyle styleSeparatorV;
 
 
-        internal static GUIStyle styleDropDownButton,styleDropDownListBox,styleDropDownListItem;
+        internal static GUIStyle styleDropDownButton, styleDropDownWindowButton, styleDropDownListBox, styleDropDownListItem;
 
         List<GuidePage> lstPages { 
             get {
@@ -74,6 +74,7 @@ namespace KSPTips.Windows
         internal override void Start()
         {
             listIsFiltered = true;
+            BuildOrFlight = 1;
             if (HighLogic.LoadedScene == GameScenes.EDITOR)
             {
                 listCanBeFiltered = true;
@@ -82,6 +83,7 @@ namespace KSPTips.Windows
                 } else {
                     lstPagesFiltered = KSPTips.lstGuidePages.Where(p => p.guide.TargetScene == "SPH").ToList();
                 }
+                BuildOrFlight = 0;
             }
             else if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
@@ -185,7 +187,7 @@ namespace KSPTips.Windows
             ddlWindowDisplay.DrawButton();
             WindowToDisplay = (WindowDisplayEnum)ddlWindowDisplay.SelectedIndex;
 
-            GUILayout.Space(mbTip.debugwin.intTest1);
+            GUILayout.Space(20);
 
             switch (WindowToDisplay) {
                 case WindowDisplayEnum.KeyboardMap:
@@ -208,8 +210,8 @@ namespace KSPTips.Windows
         }
 
         Int32 BuildOrFlight = 1;
-        Int32 LightOrDark = 0;
-        Boolean blnZoom = false;
+        //Int32 LightOrDark = 0;
+        //Int32 ZoomLevel = 1;
         String KeyboardMapTexture = "";
         internal Texture2D texKeyboardMap = new Texture2D(2560, 1810, TextureFormat.ARGB32, false);
         private void DrawWindow_Header_KeyboardMap()
@@ -219,18 +221,22 @@ namespace KSPTips.Windows
             BuildOrFlight = GUILayout.Toolbar(BuildOrFlight, new String[] { "Build Map", "Flight Map" }, styleButton);
 
             //LightOrDark
-            GUILayout.Space(mbTip.debugwin.intTest2);
+            GUILayout.Space(20);
             GUILayout.Label("Background: ", styleTitle);
-            LightOrDark = GUILayout.Toolbar(LightOrDark, new String[] { "Light", "Dark" }, styleButton);
+            Int32 oldLorD = KSPTips.settings.LightOrDark;
+            KSPTips.settings.LightOrDark = GUILayout.Toolbar(KSPTips.settings.LightOrDark, new String[] { "Light", "Dark" }, styleButton);
+            if (oldLorD != KSPTips.settings.LightOrDark) KSPTips.settings.Save();
 
             //Zoom or not
-            GUILayout.Space(mbTip.debugwin.intTest3);
+            GUILayout.Space(20);
             GUILayout.Label("Zoom: ", styleTitle);
-            blnZoom = GUILayout.Toggle(blnZoom, "Zoom In", styleButton);
+            Int32 oldZoom = KSPTips.settings.ZoomLevel;
+            KSPTips.settings.ZoomLevel = GUILayout.Toolbar(KSPTips.settings.ZoomLevel, new String[] { "Scale", "Med", "High" }, styleButton);
+            if (oldZoom != KSPTips.settings.ZoomLevel) KSPTips.settings.Save();
 
             String NewKeyboardMapTexture = "KeyboardLayout" +
-                (BuildOrFlight==0 ? "-Build" : "-Flight") + 
-                (LightOrDark==0 ? "" : "-Dark") +
+                (BuildOrFlight==0 ? "-Build" : "-Flight") +
+                (KSPTips.settings.LightOrDark == 0 ? "" : "-Dark") +
                 "_Hires.png";
 
             if (NewKeyboardMapTexture != KeyboardMapTexture)
@@ -296,16 +302,35 @@ namespace KSPTips.Windows
             GUILayout.Space(-7);
 
             //draw the texture and drag with the mouse, or maybe scrollbar
-            if(!blnZoom){
+            if (KSPTips.settings.ZoomLevel == 0)
+            {
+                GUILayout.BeginHorizontal(new GUIStyle());
+
                 GUILayout.Box(texKeyboardMap, stylePage);
+
+                GUILayout.EndHorizontal();
             }
             else
             {
-                KeyMapScrollPos = GUILayout.BeginScrollView(KeyMapScrollPos);
+                if (KSPTips.settings.ZoomLevel == 1)
+                {
+                    styleKeyMapTex.fixedWidth = stylePage.fixedWidth + ((2560 - stylePage.fixedWidth) / 2);
+                    styleKeyMapTex.fixedHeight = styleKeyMapTex.fixedWidth * 1810 / 2560;
+                } else {
+                    styleKeyMapTex.fixedWidth = 2560;
+                    styleKeyMapTex.fixedHeight = 1810;
+                }
+                KeyMapScrollPos = GUILayout.BeginScrollView(KeyMapScrollPos, new GUIStyle() {margin = new RectOffset(2,2,2,2) });
 
                 GUILayout.Box(texKeyboardMap, styleKeyMapTex);
 
                 GUILayout.EndScrollView();
+
+                if (Event.current.type == EventType.Repaint) {
+                    rectScrollSize = GUILayoutUtility.GetLastRect();
+                }
+
+                DragKeyboardMapCheck_Window();
             }
         }
 
@@ -321,6 +346,14 @@ namespace KSPTips.Windows
         {
             SetPageSize();
             InputLockMonitor();
+
+            if (WindowToDisplay == WindowDisplayEnum.KeyboardMap)
+                DragKeyboardMapCheck_Every();
+            else
+                blnDragging = false;
+
+
+            DragEnabled = !(blnDragging);
 
             base.OnGUIEvery();
         }
@@ -415,9 +448,12 @@ namespace KSPTips.Windows
             styleDropDownButton.padding.left = 10;
             styleDropDownButton.fixedWidth = 245;
 
+
             ddlGuide.styleButton = styleDropDownButton;
-            ddlWindowDisplay.styleButton = styleDropDownButton;
-            ddlWindowDisplay.styleButton.fixedWidth = 125;
+            
+            styleDropDownWindowButton = new GUIStyle(styleDropDownButton);
+            styleDropDownWindowButton.fixedWidth = 125;
+            ddlWindowDisplay.styleButton = styleDropDownWindowButton;
 
             styleDropDownListBox = new GUIStyle();
             styleDropDownListBox.normal.background = mbTip.texBox;
@@ -460,6 +496,40 @@ namespace KSPTips.Windows
         }
 
 
+        internal static Rect rectScrollSize;
+        internal static Vector2 vectMousePos;
+        internal static Boolean blnDragging = false;
+
+        void DragKeyboardMapCheck_Window()
+        {
+            if(Event.current.type == EventType.mouseDown && 
+                Event.current.button==0 &&
+                rectScrollSize.Contains(vectMousePos - new Vector2(WindowRect.x,WindowRect.y)))
+            {
+                blnDragging = true;
+                KeyMapScrollPosMouseLast = vectMousePos;
+            }
+        }
+
+
+        internal static Vector2 KeyMapScrollPosMouseLast= new Vector2();
+        void DragKeyboardMapCheck_Every()
+        {
+            vectMousePos = Event.current.mousePosition;
+
+            if (Event.current.type == EventType.mouseUp && 
+                Event.current.button==0){
+                blnDragging=false;
+            }
+
+            if( blnDragging){
+
+                //(vectMousePos - KeyMapScrollPosDragLast)
+                KeyMapScrollPos -= (vectMousePos - KeyMapScrollPosMouseLast);
+
+                KeyMapScrollPosMouseLast = vectMousePos;
+            }
+        }
 
 
         internal Boolean MouseOverWindow = false;

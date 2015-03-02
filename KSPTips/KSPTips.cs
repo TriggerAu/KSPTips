@@ -16,6 +16,7 @@ namespace KSPTips
         public KSPTips_Editor()
         {
             isShowingGuides = true;
+            isShowingTips = false;
         }
     }
     [KSPAddon(KSPAddon.Startup.Flight, false)]
@@ -24,6 +25,7 @@ namespace KSPTips
         public KSPTips_Flight()
         {
             isShowingGuides = true;
+            isShowingTips = false;
         }
     }
 
@@ -86,27 +88,27 @@ namespace KSPTips
                 LogFormatted("Settings Load Failed");
 
             if (isShowingGuides) { 
-            loadGuides();
-            LogFormatted("GuidePages loaded: {0}",lstGuides.Count);
-            string guideslist = "";
-            foreach (GuidePage item in lstGuidePages)
-            {
-                guideslist += "\r\n" + String.Format("{0}-{1}  {2}-{3}  {4}", item.guide.TargetScene, item.guide.Folder, item.guide.Title, item.Title, item.Image);
-            }
-            LogFormatted_DebugOnly(guideslist);
+                loadGuides();
+                LogFormatted("GuidePages loaded: {0}",lstGuides.Count);
+                string guideslist = "";
+                foreach (GuidePage item in lstGuidePages)
+                {
+                    guideslist += "\r\n" + String.Format("{0}-{1}  {2}-{3}  {4}", item.guide.TargetScene, item.guide.Folder, item.guide.Title, item.Title, item.Image);
+                }
+                LogFormatted_DebugOnly(guideslist);
 
-            windowGuides = gameObject.AddComponent<Windows.Guides>();
-            windowGuides.mbTip = this;
-            windowGuides.WindowRect = new Rect(100, 100, 600, 400);
+                windowGuides = gameObject.AddComponent<Windows.Guides>();
+                windowGuides.mbTip = this;
+                windowGuides.WindowRect = new Rect(100, 100, 600, 400);
 
-            Texture2D texMainButton = new Texture2D(38, 38, TextureFormat.ARGB32, false);
-            KSPTips.ExtractToTexture(ref texMainButton, "img_Book");
-            AppButton = new AppLauncherButtonWrapper(texMainButton);
-            GameEvents.onGUIApplicationLauncherReady.Add(AppButton.OnGUIAppLauncherReady);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Add(AppButton.OnGUIAppLauncherUnreadify);
+                Texture2D texMainButton = new Texture2D(38, 38, TextureFormat.ARGB32, false);
+                KSPTips.ExtractToTexture(ref texMainButton, "img_Book");
+                AppButton = new AppLauncherButtonWrapper(texMainButton);
+                GameEvents.onGUIApplicationLauncherReady.Add(AppButton.OnGUIAppLauncherReady);
+                GameEvents.onGUIApplicationLauncherUnreadifying.Add(AppButton.OnGUIAppLauncherUnreadify);
 
-            AppButton.onTrue += AppButton_onTrue;
-            AppButton.onFalse += AppButton_onFalse;
+                AppButton.onTrue += AppButton_onTrue;
+                AppButton.onFalse += AppButton_onFalse;
             }
 
             if (isShowingTips)
