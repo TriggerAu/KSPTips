@@ -50,6 +50,8 @@
     <Compile Include="KSPTips.cs" />
     <Compile Include="KSPTipsDownloader.cs" />
     <Compile Include="KSPTipsWindowBuilding.cs" />
+    <Compile Include="Shared\Extensions.cs" />
+    <Compile Include="Shared\TextureScale.cs" />
     <Compile Include="Windows\Tips.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourExtended.cs" />
     <Compile Include="KSPPluginFramework\MonoBehaviourWindow.cs" />
@@ -123,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\img_Book.png" />
+    <None Include="Resources\img_KeyboardSmall.png" />
+    <None Include="Resources\img_BookSmall.png" />
     <None Include="Resources\img_Reset.png" />
     <None Include="Resources\tex_BoxWithHeader.png" />
     <None Include="Resources\img_SeparatorVertical.png" />
@@ -132,8 +136,10 @@
   <PropertyGroup>
     <PostBuildEvent>rem Set the Variables we need
 echo Finding KSP
-if exist "D:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
-	set GAMEPATH="D:\~Games\KSP_Win_PlugInTest_Minimal"
+if exist "R:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
+	set GAMEPATH="R:\~Games\KSP_Win_PlugInTest_Minimal"
+) else if exist "D:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
+	set GAMEPATH="D:\~Games\KSP_Win_PlugInTest_Minimal
 ) else if exist "C:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
 	set GAMEPATH="C:\~Games\KSP_Win_PlugInTest_Minimal
 ) else if exist "D:\~Games\KSP_Win_PlugInTest\KSP.exe" (

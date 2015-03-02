@@ -20,6 +20,9 @@ namespace KSPTips
 
         [Persistent] public Vector3 TipsTopLeftPos = new Vector3();
         [Persistent] public Boolean TipsTopLeftSet = false;
+
+        [Persistent] public Int32 LightOrDark = 0;
+        [Persistent] public Int32 ZoomLevel = 1;
     }
 
 

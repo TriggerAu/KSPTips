@@ -79,14 +79,19 @@ namespace KSPTips
                 DrawTextBox(ref intTest9);
                 DrawTextBox(ref intTest10);
 
-                GUILayout.Label(HighLogic.CurrentGame.editorFacility.ToString());
-                GUILayout.Label(EditorLogic.VesselRotation.ToString());
-                GUILayout.Label(Vector3d.up.ToString());
-                GUILayout.Label((EditorLogic.VesselRotation * Vector3d.up).ToString());
+                //GUILayout.Label(HighLogic.CurrentGame.editorFacility.ToString());
+                //GUILayout.Label(EditorLogic.VesselRotation.ToString());
+                //GUILayout.Label(Vector3d.up.ToString());
+                //GUILayout.Label((EditorLogic.VesselRotation * Vector3d.up).ToString());
 
-                GUILayout.Label(((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up).ToString());
+                //GUILayout.Label(((EditorLogic.VesselRotation * Vector3d.up) == Vector3.up).ToString());
 
-                GUILayout.Label(Windows.Guides.isEditorVAB.ToString());
+                //GUILayout.Label(Windows.Guides.isEditorVAB.ToString());
+
+                GUILayout.Label(Windows.Guides.rectScrollSize.ToString());
+                GUILayout.Label(Windows.Guides.vectMousePos.ToString());
+                GUILayout.Label(Windows.Guides.blnDragging.ToString());
+                
             }
             catch (Exception)
             {

@@ -16,6 +16,7 @@ namespace KSPTips
         public KSPTips_Editor()
         {
             isShowingGuides = true;
+            isShowingTips = false;
         }
     }
     [KSPAddon(KSPAddon.Startup.Flight, false)]
@@ -24,6 +25,7 @@ namespace KSPTips
         public KSPTips_Flight()
         {
             isShowingGuides = true;
+            isShowingTips = false;
         }
     }
 
@@ -68,6 +70,7 @@ namespace KSPTips
 
         internal static Settings settings;
         internal Texture2D texBox,texBoxWithHeader,texCross,texPlay,texNext,texPrev,texPause,texReset;
+        internal Texture2D texBookSmall,texKeyboardSmall;
 
         internal AppLauncherButtonWrapper AppButton;
 
@@ -85,27 +88,27 @@ namespace KSPTips
                 LogFormatted("Settings Load Failed");
 
             if (isShowingGuides) { 
-            loadGuides();
-            LogFormatted("GuidePages loaded: {0}",lstGuides.Count);
-            string guideslist = "";
-            foreach (GuidePage item in lstGuidePages)
-            {
-                guideslist += "\r\n" + String.Format("{0}-{1}  {2}-{3}  {4}", item.guide.TargetScene, item.guide.Folder, item.guide.Title, item.Title, item.Image);
-            }
-            LogFormatted_DebugOnly(guideslist);
+                loadGuides();
+                LogFormatted("GuidePages loaded: {0}",lstGuides.Count);
+                string guideslist = "";
+                foreach (GuidePage item in lstGuidePages)
+                {
+                    guideslist += "\r\n" + String.Format("{0}-{1}  {2}-{3}  {4}", item.guide.TargetScene, item.guide.Folder, item.guide.Title, item.Title, item.Image);
+                }
+                LogFormatted_DebugOnly(guideslist);
 
-            windowGuides = gameObject.AddComponent<Windows.Guides>();
-            windowGuides.mbTip = this;
-            windowGuides.WindowRect = new Rect(100, 100, 600, 400);
+                windowGuides = gameObject.AddComponent<Windows.Guides>();
+                windowGuides.mbTip = this;
+                windowGuides.WindowRect = new Rect(100, 100, 600, 400);
 
-            Texture2D texMainButton = new Texture2D(38, 38, TextureFormat.ARGB32, false);
-            KSPTips.ExtractToTexture(ref texMainButton, "img_Book");
-            AppButton = new AppLauncherButtonWrapper(texMainButton);
-            GameEvents.onGUIApplicationLauncherReady.Add(AppButton.OnGUIAppLauncherReady);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Add(AppButton.OnGUIAppLauncherUnreadify);
+                Texture2D texMainButton = new Texture2D(38, 38, TextureFormat.ARGB32, false);
+                KSPTips.ExtractToTexture(ref texMainButton, "img_Book");
+                AppButton = new AppLauncherButtonWrapper(texMainButton);
+                GameEvents.onGUIApplicationLauncherReady.Add(AppButton.OnGUIAppLauncherReady);
+                GameEvents.onGUIApplicationLauncherUnreadifying.Add(AppButton.OnGUIAppLauncherUnreadify);
 
-            AppButton.onTrue += AppButton_onTrue;
-            AppButton.onFalse += AppButton_onFalse;
+                AppButton.onTrue += AppButton_onTrue;
+                AppButton.onFalse += AppButton_onFalse;
             }
 
             if (isShowingTips)
@@ -182,6 +185,9 @@ namespace KSPTips
             texCross = new Texture2D(16, 16, TextureFormat.ARGB32, false);
             texReset = new Texture2D(16, 16, TextureFormat.ARGB32, false);
 
+            texBookSmall = new Texture2D(14, 14, TextureFormat.ARGB32, false);
+            texKeyboardSmall = new Texture2D(16, 14, TextureFormat.ARGB32, false);
+
             KSPTips.ExtractToTexture(ref texReset, "img_Reset");
             KSPTips.ExtractToTexture(ref texCross, "img_Cross");
             KSPTips.ExtractToTexture(ref texPlay, "img_Play");
@@ -190,6 +196,10 @@ namespace KSPTips
             KSPTips.ExtractToTexture(ref texPrev, "img_Prev");
             KSPTips.ExtractToTexture(ref texBox, "tex_Box");
             KSPTips.ExtractToTexture(ref texBoxWithHeader, "tex_BoxWithHeader");
+
+            KSPTips.ExtractToTexture(ref texBookSmall, "img_BookSmall");
+            KSPTips.ExtractToTexture(ref texKeyboardSmall, "img_KeyboardSmall");
+
         }
 
         internal override void OnGUIEvery()
